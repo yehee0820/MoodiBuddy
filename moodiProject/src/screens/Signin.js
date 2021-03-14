@@ -6,27 +6,25 @@ import {
     TouchableOpacity,
     StyleSheet, Button
 } from 'react-native';
+import { withNavigation } from 'react-navigation';
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 
-const Login = (username, password, email)=> {
-    fetch('http://ec2-54-180-93-247.ap-northeast-2.compute.amazonaws.com/api/v1/user/login', {
-        method: "PUT",
+const Signin = (username, password, email)=> {
+    fetch('http://ec2-54-180-93-247.ap-northeast-2.compute.amazonaws.com/api/v1/user/', {
+        method: "POST",
         headers:{
             'Accept' : 'application/json',
             'Content-type' : 'application/json',
         },
-        body: JSON.stringify({ username : username, password : password })
+        body: JSON.stringify({ username : username, password : password ,email : email, grantType: 'OAUTH'})
     })
-    .then(resp => {console.log(resp)
-            return resp.json();
-    })
-    .then(resp => {
-        localStorage.setItem('token', resp.data.token)
-    })
+    .then(resp => resp.json())
     .catch(error => console.log('error'))
 }
 
-export default class LoginScreen extends Component{
+
+
+class SigninScreen extends Component{
     
     static navigationOptions = {
         headerShown: false,
@@ -45,19 +43,19 @@ export default class LoginScreen extends Component{
                         
                         style={styles.textForm} 
                         placeholder={"ID"}
-                        onChangeText={(username) => Login(username)}
+                        onChangeText={(username) => Signin(username)}
                         />
                         
                     <TextInput 
                         style={styles.textForm} 
                         placeholder={"Password"}
-                        onChangeText={(password) => Login(password)}
+                        onChangeText={(password) => Signin(password)}
                         />
                     
                     <TextInput 
                         style={styles.textForm} 
                         placeholder={"email"}
-                        onChangeText={(email) => Login(email)}
+                        onChangeText={(email) => Signin(email)}
                         />
                 </View>
              
@@ -65,9 +63,12 @@ export default class LoginScreen extends Component{
                     
                     <TouchableOpacity 
                         style={styles.button}
-                        onPress={() => Login()}>
-                        <Text style={styles.buttonTitle}>Login</Text>
+                        onPress={(props) =>  {Signin(); this.props.navigation.navigate({
+                                            routeName: 'LoginScreen'
+                                        }); }}>
+                        <Text style={styles.buttonTitle}>Sign in</Text>
                     </TouchableOpacity>
+
                 </View>
             </View>
         );
@@ -108,13 +109,15 @@ const styles = StyleSheet.create({
         height: hp('5%'),
     },
     button: {
-        backgroundColor: "#46c3ad",
+        backgroundColor: "#ffee6b",
         width: "100%",
         height: "100%",
         justifyContent: 'center',
         alignItems: 'center',
     },
     buttonTitle: {
-        color: 'white',
+        color: 'black',
     },
 })
+
+export default withNavigation(SigninScreen);

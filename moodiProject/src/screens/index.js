@@ -12,6 +12,7 @@ import DiaryScreen from './Diarymemo';
 import StatScreen from './MoodStatistics';
 import CommuScreen from './Community';
 import StoreScreen from './Store';
+import SigninScreen from './Signin';
 
 const HomeStack = createStackNavigator(
     {
@@ -107,6 +108,7 @@ const TabNavigator = createBottomTabNavigator(
 
 const AppStack = createStackNavigator(
     {
+        SigninScreen: SigninScreen,
         LoginScreen: LoginScreen,
         TabNavigator: {
             screen: TabNavigator,
