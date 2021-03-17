@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { 
     View, 
     Text, 
@@ -15,47 +15,72 @@ import * as Animatable from 'react-native-animatable';
 import LinearGradient from 'react-native-linear-gradient';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
+import { useEffect } from 'react';
+import axios from 'axios';
+import { useLinkProps } from '@react-navigation/native';
 
-const SignInScreen = ({navigation}) => {
+const SignUpScreen = ({navigation}) => {
 
-    const [data, setData] = React.useState({
+    const [data, setData] = useState({
+        email: '',
         username: '',
         password: '',
         confirm_password: '',
+        check_emailInputChange: false,
         check_textInputChange: false,
         secureTextEntry: true,
-        confirm_secureTextEntry: true,
+        // confirm_secureTextEntry: true,
     });
 
-    const textInputChange = (val) => {
-        if( val.length !== 0 ) {
+    
+    const emailInputChange = e => {
+        e.persist()
+        if( e.length !== 0 ) {
             setData({
                 ...data,
-                username: val,
+                email: e.target.data,
+                check_emailInputChange: true
+            });
+        } else {
+            setData({
+                ...data,
+                email: e.target.data,
+                check_emailInputChange: false
+            });
+        }
+    }
+
+    const textInputChange = e => {
+        e.persist()
+        if( e.length !== 0 ) {
+            setData({
+                ...data,
+                username: e.target.data,
                 check_textInputChange: true
             });
         } else {
             setData({
                 ...data,
-                username: val,
+                username: e.target.data,
                 check_textInputChange: false
             });
         }
     }
 
-    const handlePasswordChange = (val) => {
+    const handlePasswordChange = e => {
+        e.persist()
         setData({
             ...data,
-            password: val
+            password: e.target.data
         });
     }
 
-    const handleConfirmPasswordChange = (val) => {
-        setData({
-            ...data,
-            confirm_password: val
-        });
-    }
+    // const handleConfirmPasswordChange = (e) => {
+    //     setData({
+    //         ...data,
+    //         confirm_password: e.target.data
+    //     });
+    // }
 
     const updateSecureTextEntry = () => {
         setData({
@@ -64,16 +89,32 @@ const SignInScreen = ({navigation}) => {
         });
     }
 
-    const updateConfirmSecureTextEntry = () => {
-        setData({
-            ...data,
-            confirm_secureTextEntry: !data.confirm_secureTextEntry
-        });
+    // const updateConfirmSecureTextEntry = () => {
+    //     setData({
+    //         ...data,
+    //         confirm_secureTextEntry: !data.confirm_secureTextEntry
+    //     });
+    // }
+
+    //axios로 입력한 데이터 백엔드로 보내기
+    
+    const handleSubmit = (email, username,password) => {
+        axios.post('http://ec2-54-180-93-247.ap-northeast-2.compute.amazonaws.com/api/v1/user/', {email:email, 
+    username: username, password: password, grantType: 'OAUTH'}, {
+            headers: {'Accept' : 'application/json',
+            'Content-type' : 'application/json'}
+        }).then((res) => {
+            console.log(res);
+          })
+          .catch((err) => {
+            console.log("ERROR", err.res);
+          })
     }
+    
 
     return (
       <View style={styles.container}>
-          <StatusBar backgroundColor='#009387' barStyle="light-content"/>
+          <StatusBar backgroundColor='#ffee6b' barStyle="light-content"/>
         <View style={styles.header}>
             <Text style={styles.text_header}>Register Now!</Text>
         </View>
@@ -82,18 +123,48 @@ const SignInScreen = ({navigation}) => {
             style={styles.footer}
         >
             <ScrollView>
-            <Text style={styles.text_footer}>Username</Text>
+            <Text style={styles.text_footer}>Email</Text>
+            <View style={styles.action}>
+                <FontAwesome 
+                    name="envelope-o"
+                    color="#4a453f"
+                    size={18}
+                />
+                <TextInput 
+                    placeholder="Your Email"
+                    style={styles.textInput}
+                    autoCapitalize="none"
+                    value={data.email}
+                    onChange={emailInputChange} required
+                />
+                {data.check_emailInputChange ? 
+                <Animatable.View
+                    animation="bounceIn"
+                >
+                    <Feather 
+                        name="check-circle"
+                        color="#a9d1d9"
+                        size={18}
+                    />
+                </Animatable.View>
+                : null}
+            </View>
+
+            <Text style={[styles.text_footer, {
+                marginTop: 35
+            }]}>Username</Text>
             <View style={styles.action}>
                 <FontAwesome 
                     name="user-o"
-                    color="#05375a"
-                    size={20}
+                    color="#4a453f"
+                    size={18}
                 />
                 <TextInput 
                     placeholder="Your Username"
                     style={styles.textInput}
                     autoCapitalize="none"
-                    onChangeText={(val) => textInputChange(val)}
+                    value={data.username}
+                    onChange={textInputChange} required
                 />
                 {data.check_textInputChange ? 
                 <Animatable.View
@@ -101,8 +172,8 @@ const SignInScreen = ({navigation}) => {
                 >
                     <Feather 
                         name="check-circle"
-                        color="green"
-                        size={20}
+                        color="#a9d1d9"
+                        size={18}
                     />
                 </Animatable.View>
                 : null}
@@ -114,15 +185,16 @@ const SignInScreen = ({navigation}) => {
             <View style={styles.action}>
                 <Feather 
                     name="lock"
-                    color="#05375a"
-                    size={20}
+                    color="#4a453f"
+                    size={18}
                 />
                 <TextInput 
                     placeholder="Your Password"
                     secureTextEntry={data.secureTextEntry ? true : false}
                     style={styles.textInput}
                     autoCapitalize="none"
-                    onChangeText={(val) => handlePasswordChange(val)}
+                    value={data.password}
+                    onChange={handlePasswordChange} required
                 />
                 <TouchableOpacity
                     onPress={updateSecureTextEntry}
@@ -131,26 +203,26 @@ const SignInScreen = ({navigation}) => {
                     <Feather 
                         name="eye-off"
                         color="grey"
-                        size={20}
+                        size={18}
                     />
                     :
                     <Feather 
                         name="eye"
                         color="grey"
-                        size={20}
+                        size={18}
                     />
                     }
                 </TouchableOpacity>
             </View>
 
-            <Text style={[styles.text_footer, {
+            {/* <Text style={[styles.text_footer, {
                 marginTop: 35
             }]}>Confirm Password</Text>
             <View style={styles.action}>
                 <Feather 
                     name="lock"
-                    color="#05375a"
-                    size={20}
+                    color="#4a453f"
+                    size={18}
                 />
                 <TextInput 
                     placeholder="Confirm Your Password"
@@ -166,17 +238,17 @@ const SignInScreen = ({navigation}) => {
                     <Feather 
                         name="eye-off"
                         color="grey"
-                        size={20}
+                        size={18}
                     />
                     :
                     <Feather 
                         name="eye"
                         color="grey"
-                        size={20}
+                        size={18}
                     />
                     }
                 </TouchableOpacity>
-            </View>
+            </View> */}
             <View style={styles.textPrivate}>
                 <Text style={styles.color_textPrivate}>
                     By signing up you agree to our
@@ -188,10 +260,11 @@ const SignInScreen = ({navigation}) => {
             <View style={styles.button}>
                 <TouchableOpacity
                     style={styles.signIn}
-                    onPress={() => {}}
+                    onPress={handleSubmit}
+                    //여기 누르면 axios 또는 fetch로 서버와 연결되도록!
                 >
                 <LinearGradient
-                    colors={['#08d4c4', '#01ab9d']}
+                    colors={['#C6D685', '#c6d685']}
                     style={styles.signIn}
                 >
                     <Text style={[styles.textSign, {
@@ -203,13 +276,13 @@ const SignInScreen = ({navigation}) => {
                 <TouchableOpacity
                     onPress={() => navigation.goBack()}
                     style={[styles.signIn, {
-                        borderColor: '#009387',
+                        borderColor: '#C6D685',
                         borderWidth: 1,
                         marginTop: 15
                     }]}
                 >
                     <Text style={[styles.textSign, {
-                        color: '#009387'
+                        color: '#C6D685'
                     }]}>Sign In</Text>
                 </TouchableOpacity>
             </View>
@@ -219,12 +292,12 @@ const SignInScreen = ({navigation}) => {
     );
 };
 
-export default SignInScreen;
+export default SignUpScreen;
 
 const styles = StyleSheet.create({
     container: {
       flex: 1, 
-      backgroundColor: '#009387'
+      backgroundColor: '#ffee6b'
     },
     header: {
         flex: 1,
@@ -241,12 +314,12 @@ const styles = StyleSheet.create({
         paddingVertical: 30
     },
     text_header: {
-        color: '#fff',
+        color: '#4a453f',
         fontWeight: 'bold',
         fontSize: 30
     },
     text_footer: {
-        color: '#05375a',
+        color: '#4a453f',
         fontSize: 18
     },
     action: {
@@ -260,7 +333,7 @@ const styles = StyleSheet.create({
         flex: 1,
         marginTop: Platform.OS === 'ios' ? 0 : -12,
         paddingLeft: 10,
-        color: '#05375a',
+        color: '#4a453f',
     },
     button: {
         alignItems: 'center',

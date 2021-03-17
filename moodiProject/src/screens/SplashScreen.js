@@ -18,11 +18,11 @@ const SplashScreen = ({navigation}) => {
 
     return (
       <View style={styles.container}>
-          <StatusBar backgroundColor='#009387' barStyle="light-content"/>
+          <StatusBar backgroundColor='#ffee6b' barStyle="light-content"/>
         <View style={styles.header}>
             <Animatable.Image 
                 animation="bounceIn"
-                duraton="1500"
+                duraton="8000"
             source={require('../../assets/images/snoopyrun.png')}
             style={styles.logo}
             resizeMode="contain"
@@ -36,15 +36,15 @@ const SplashScreen = ({navigation}) => {
         >
             <Text style={[styles.title, {
                 color: colors.text
-            }]}>Stay connected with everyone!</Text>
-            <Text style={styles.text}>Sign in with account</Text>
+            }]}>무디버디와 함께 하실래요?</Text>
+            <Text style={styles.text}>계정을 만들고 시작해보세요!</Text>
             <View style={styles.button}>
             <TouchableOpacity onPress={()=>navigation.navigate('SignInScreen')}>
                 <LinearGradient
-                    colors={['#08d4c4', '#01ab9d']}
+                    colors={['#a9d1d9', '#a9d1d9']}
                     style={styles.signIn}
                 >
-                    <Text style={styles.textSign}>Get Started</Text>
+                    <Text style={styles.textSign}>바로 시작하기</Text>
                     <MaterialIcons 
                         name="navigate-next"
                         color="#fff"
@@ -66,7 +66,7 @@ const height_logo = height * 0.28;
 const styles = StyleSheet.create({
   container: {
     flex: 1, 
-    backgroundColor: '#009387'
+    backgroundColor: '#ffee6b'
   },
   header: {
       flex: 2,
