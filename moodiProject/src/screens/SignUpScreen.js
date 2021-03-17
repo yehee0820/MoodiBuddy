@@ -32,9 +32,20 @@ const SignUpScreen = ({navigation}) => {
         // confirm_secureTextEntry: true,
     });
 
-    
+    const handleSubmit = () => {
+        axios.post('http://ec2-54-180-93-247.ap-northeast-2.compute.amazonaws.com/api/v1/user/', data, {
+            headers: {'Accept' : 'application/json',
+            'Content-type' : 'application/json'}
+        }).then((res) => {
+            console.log(res);
+            
+          })
+          .catch((err) => {
+            console.log("ERROR", err.res);
+          })
+    }
+
     const emailInputChange = e => {
-        e.persist()
         if( e.length !== 0 ) {
             setData({
                 ...data,
@@ -51,7 +62,6 @@ const SignUpScreen = ({navigation}) => {
     }
 
     const textInputChange = e => {
-        e.persist()
         if( e.length !== 0 ) {
             setData({
                 ...data,
@@ -68,7 +78,6 @@ const SignUpScreen = ({navigation}) => {
     }
 
     const handlePasswordChange = e => {
-        e.persist()
         setData({
             ...data,
             password: e.target.data
@@ -98,18 +107,6 @@ const SignUpScreen = ({navigation}) => {
 
     //axios로 입력한 데이터 백엔드로 보내기
     
-    const handleSubmit = (email, username,password) => {
-        axios.post('http://ec2-54-180-93-247.ap-northeast-2.compute.amazonaws.com/api/v1/user/', {email:email, 
-    username: username, password: password, grantType: 'OAUTH'}, {
-            headers: {'Accept' : 'application/json',
-            'Content-type' : 'application/json'}
-        }).then((res) => {
-            console.log(res);
-          })
-          .catch((err) => {
-            console.log("ERROR", err.res);
-          })
-    }
     
 
     return (
