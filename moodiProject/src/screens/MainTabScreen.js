@@ -9,6 +9,7 @@ import HomeScreen from './HomeScreen';
 import DetailsScreen from './DetailsScreen';
 import ExploreScreen from './ExploreScreen';
 import ProfileScreen from './ProfileScreen';
+import { NavigationContainer } from '@react-navigation/native';
 
 const HomeStack = createStackNavigator();
 const DetailsStack = createStackNavigator();
@@ -70,6 +71,7 @@ const MainTabScreen = () => (
 export default MainTabScreen;
 
 const HomeStackScreen = ({navigation}) => (
+  <NavigationContainer>
 <HomeStack.Navigator screenOptions={{
         headerStyle: {
         backgroundColor: '#009387',
@@ -85,10 +87,11 @@ const HomeStackScreen = ({navigation}) => (
             <Icon.Button name="ios-menu" size={25} backgroundColor="#009387" onPress={() => navigation.openDrawer()}></Icon.Button>
         )
         }} />
-</HomeStack.Navigator>
+</HomeStack.Navigator></NavigationContainer>
 );
 
 const DetailsStackScreen = ({navigation}) => (
+  <NavigationContainer>
 <DetailsStack.Navigator screenOptions={{
         headerStyle: {
         backgroundColor: '#1f65ff',
@@ -103,5 +106,5 @@ const DetailsStackScreen = ({navigation}) => (
             <Icon.Button name="ios-menu" size={25} backgroundColor="#1f65ff" onPress={() => navigation.openDrawer()}></Icon.Button>
         )
         }} />
-</DetailsStack.Navigator>
+</DetailsStack.Navigator></NavigationContainer>
 );

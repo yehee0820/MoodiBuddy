@@ -18,6 +18,7 @@ import Feather from 'react-native-vector-icons/Feather';
 import { useEffect } from 'react';
 import axios from 'axios';
 import { useLinkProps } from '@react-navigation/native';
+import { NavigationEvents } from 'react-navigation';
 
 const SignUpScreen = ({navigation}) => {
 
@@ -39,8 +40,8 @@ const SignUpScreen = ({navigation}) => {
             'Content-type' : 'application/json'}
         }).then((res) => {
             console.log(res);
-            
           })
+        //   .then(navigation.navigate('Home'))
           .catch((err) => {
             console.log("ERROR", err.res);
           })
@@ -264,6 +265,7 @@ const SignUpScreen = ({navigation}) => {
                 <TouchableOpacity
                     style={styles.signIn}
                     onPress={handleSubmit}
+                    onPress={() => navigation.goBack()}
                     //여기 누르면 axios 또는 fetch로 서버와 연결되도록!
                 >
                 <LinearGradient
