@@ -25,7 +25,8 @@ const SignUpScreen = ({navigation}) => {
         email: '',
         username: '',
         password: '',
-        confirm_password: '',
+        grantType: 'OAUTH',
+        // confirm_password: '',
         check_emailInputChange: false,
         check_textInputChange: false,
         secureTextEntry: true,
@@ -46,41 +47,46 @@ const SignUpScreen = ({navigation}) => {
     }
 
     const emailInputChange = e => {
-        if( e.length !== 0 ) {
-            setData({
-                ...data,
-                email: e.target.data,
-                check_emailInputChange: true
-            });
-        } else {
-            setData({
-                ...data,
-                email: e.target.data,
-                check_emailInputChange: false
-            });
-        }
+        setData({
+            ...data,
+            email: e.nativeEvent.text,
+            check_emailInputChange: true
+        });
+        // if( e.length !== 0 ) {
+        //     setData({
+        //         ...data,
+        //         email: e.target.value,
+        //         check_emailInputChange: true
+        //     });
+        // } else {
+        // }
     }
 
     const textInputChange = e => {
-        if( e.length !== 0 ) {
-            setData({
-                ...data,
-                username: e.target.data,
-                check_textInputChange: true
-            });
-        } else {
-            setData({
-                ...data,
-                username: e.target.data,
-                check_textInputChange: false
-            });
-        }
+        setData({
+            ...data,
+            username: e.nativeEvent.text,
+            check_textInputChange: true
+        });
+        // if( e.length !== 0 ) {
+        //     setData({
+        //         ...data,
+        //         username: e.target.value,
+        //         check_textInputChange: true
+        //     });
+        // } else {
+        //     setData({
+        //         ...data,
+        //         username: e.target.value,
+        //         check_textInputChange: false
+        //     });
+        // }
     }
 
     const handlePasswordChange = e => {
         setData({
             ...data,
-            password: e.target.data
+            password: e.nativeEvent.text
         });
     }
 
