@@ -37,6 +37,7 @@
 		BC74AF5AF83A439ABF58E299 /* Octicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B77FA5071E774C3CA543E3DC /* Octicons.ttf */; };
 		C1E1308D00C04E51BE006995 /* Entypo.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3D44A9D4B94F4A498C320D8A /* Entypo.ttf */; };
 		C4210A3FCA6F42439F8F8D98 /* Zocial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4E2B00D5D36F4FB4A3CA0B7B /* Zocial.ttf */; };
+		C6763309260391DA0068758D /* main.jsbundle in Resources */ = {isa = PBXBuildFile; fileRef = 008F07F21AC5B25A0029DE68 /* main.jsbundle */; };
 		D15491AF0C3C4278B715F3B0 /* AntDesign.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 24466725698C4C088DE3D3B7 /* AntDesign.ttf */; };
 		D60B2358E4A8457CB700FBC5 /* SimpleLineIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E0EA133C26BD4FA1A1973F68 /* SimpleLineIcons.ttf */; };
 		DA86408ACA4F4C51A9130934 /* Baloo2-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 95128E966C5349239AD6D806 /* Baloo2-Medium.ttf */; };
@@ -418,6 +419,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C6763309260391DA0068758D /* main.jsbundle in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
 				DC830C28540B440688788F5F /* FugazOne-Regular.ttf in Resources */,

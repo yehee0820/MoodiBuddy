@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useContext} from 'react';
 import { 
     View, 
     Text, 
@@ -17,12 +17,13 @@ import Feather from 'react-native-vector-icons/Feather';
 import { useTheme } from 'react-native-paper';
 
 import { AuthContext } from '../components/context';
+import { Users } from './SignUpScreen'
 
-import Users from '../model/users';
-
+import axios from 'axios';
+let userToken = '';
 const SignInScreen = ({navigation}) => {
 
-    const [data, setData] = React.useState({
+    const [info, setInfo] = useState({
         username: '',
         password: '',
         check_textInputChange: false,
@@ -33,84 +34,104 @@ const SignInScreen = ({navigation}) => {
 
     const { colors } = useTheme();
 
-    const { signIn } = React.useContext(AuthContext);
+    const { signIn } = useContext(AuthContext);
 
-    const textInputChange = (val) => {
-        if( val.trim().length >= 4 ) {
-            setData({
-                ...data,
-                username: val,
-                check_textInputChange: true,
-                isValidUser: true
-            });
+    
+
+    const textInputChange = e => {
+        //빈칸 없애는 뭔가 필요... 또는 spacebar 누르지 못하게 하거나
+        if( e.length >= 4 ) {
+        setInfo({
+            ...info,
+            username: e.nativeEvent.text,
+            check_textInputChange: true,
+            isValidUser: true
+        });
         } else {
-            setData({
-                ...data,
-                username: val,
+            setInfo({
+                ...info,
+                username: e.nativeEvent.text,
                 check_textInputChange: false,
                 isValidUser: false
             });
         }
     }
-
-    const handlePasswordChange = (val) => {
-        if( val.trim().length >= 8 ) {
-            setData({
-                ...data,
-                password: val,
+//trim(): 문자열 좌우에서 공백을 제거하는 함수
+    const handlePasswordChange = e => {
+        if( e.length >= 8 ) {
+            setInfo({
+                ...info,
+                password: e.nativeEvent.text,
                 isValidPassword: true
             });
         } else {
-            setData({
-                ...data,
-                password: val,
+            setInfo({
+                ...info,
+                password: e.nativeEvent.text,
                 isValidPassword: false
             });
         }
     }
 
     const updateSecureTextEntry = () => {
-        setData({
-            ...data,
-            secureTextEntry: !data.secureTextEntry
+        setInfo({
+            ...info,
+            secureTextEntry: !info.secureTextEntry
         });
     }
 
-    const handleValidUser = (val) => {
-        if( val.trim().length >= 4 ) {
-            setData({
-                ...data,
+    const handleValidUser = val => {
+        if( val.length >= 4 ) {
+            setInfo({
+                ...info,
                 isValidUser: true
             });
         } else {
-            setData({
-                ...data,
+            setInfo({
+                ...info,
                 isValidUser: false
             });
         }
     }
 
-    const loginHandle = (userName, password) => {
-
-        const foundUser = Users.filter( item => {
-            return userName == item.username && password == item.password;
-        } );
-
-        if ( data.username.length == 0 || data.password.length == 0 ) {
-            Alert.alert('Wrong Input!', 'Username or password field cannot be empty.', [
-                {text: 'Okay'}
-            ]);
-            return;
-        }
-
-        if ( foundUser.length == 0 ) {
-            Alert.alert('Invalid User!', 'Username or password is incorrect.', [
-                {text: 'Okay'}
-            ]);
-            return;
-        }
-        signIn(foundUser);
+    const tryLogin = () => {
+        axios.put('http://ec2-54-180-93-247.ap-northeast-2.compute.amazonaws.com/api/v1/user/login/', info, {
+            headers: {'Accept' : 'application/json',
+            'Content-type' : 'application/json'}
+        }).then((res) => {
+            console.log(res.data);
+            userToken = res.data.token;
+            console.log(userToken);
+          })
+          //.then -> mainpage 받아오는 함수 실현
+        //   .then(()=>{
+        //       navigation.goBack()})
+              .catch((err) => {
+            console.log("ERROR", err.res);
+          })
     }
+    
+    // const loginHandle = (userName, password) => {
+        
+    //     const foundUser = Users.filter( item => {
+    //         return userName == item.username && password == item.password;
+    //     } );
+
+    //     if ( info.username.length == 0 || info.password.length == 0 ) {
+    //         Alert.alert('Wrong Input!', 'Username or password field cannot be empty.', [
+    //             {text: 'Okay'}
+    //         ]);
+    //         return;
+    //     }
+
+    //     if ( foundUser.length == 0 ) {
+    //         Alert.alert('Invalid User!', 'Username or password is incorrect.', [
+    //             {text: 'Okay'}
+    //         ]);
+    //         return;
+    //     }
+    //     signIn(foundUser);
+    // }
 
     return (
       <View style={styles.container}>
@@ -120,42 +141,41 @@ const SignInScreen = ({navigation}) => {
         </View>
         <Animatable.View 
             animation="fadeInUpBig"
-            style={[styles.footer, {
-                backgroundColor: colors.background
-            }]}
+            style={styles.footer}
         >
             <Text style={[styles.text_footer, {
-                color: colors.text
+                color: "#4a453f"
             }]}>Username</Text>
             <View style={styles.action}>
                 <FontAwesome 
                     name="user-o"
-                    color={colors.text}
+                    color="#4a453f"
                     size={18}
                 />
                 <TextInput 
                     placeholder="Your Username"
                     placeholderTextColor="#666666"
                     style={[styles.textInput, {
-                        color: colors.text
+                        color: "#4a453f"
                     }]}
                     autoCapitalize="none"
-                    onChangeText={(val) => textInputChange(val)}
+                    value={info.username}
+                    onChange={textInputChange} required
                     onEndEditing={(e)=>handleValidUser(e.nativeEvent.text)}
                 />
-                {data.check_textInputChange ? 
+                {info.check_textInputChange ? 
                 <Animatable.View
                     animation="bounceIn"
                 >
                     <Feather 
                         name="check-circle"
-                        color="cddb94"
+                        color="#cddb94"
                         size={18}
                     />
                 </Animatable.View>
                 : null}
             </View>
-            { data.isValidUser ? null : 
+            { info.isValidUser ? null : 
             <Animatable.View animation="fadeInLeft" duration={500}>
             <Text style={styles.errorMsg}>Username must be 4 characters long.</Text>
             </Animatable.View>
@@ -163,29 +183,30 @@ const SignInScreen = ({navigation}) => {
             
 
             <Text style={[styles.text_footer, {
-                color: colors.text,
+                color: "#4a453f",
                 marginTop: 35
             }]}>Password</Text>
             <View style={styles.action}>
                 <Feather 
                     name="lock"
-                    color={colors.text}
+                    color="#4a453f"
                     size={18}
                 />
                 <TextInput 
                     placeholder="Your Password"
                     placeholderTextColor="#666666"
-                    secureTextEntry={data.secureTextEntry ? true : false}
+                    secureTextEntry={info.secureTextEntry ? true : false}
                     style={[styles.textInput, {
-                        color: colors.text
+                        color: "#4a453f"
                     }]}
                     autoCapitalize="none"
-                    onChangeText={(val) => handlePasswordChange(val)}
+                    value={info.password}
+                    onChange={handlePasswordChange} required
                 />
                 <TouchableOpacity
                     onPress={updateSecureTextEntry}
                 >
-                    {data.secureTextEntry ? 
+                    {info.secureTextEntry ? 
                     <Feather 
                         name="eye-off"
                         color="grey"
@@ -200,12 +221,12 @@ const SignInScreen = ({navigation}) => {
                     }
                 </TouchableOpacity>
             </View>
-            { data.isValidPassword ? null : 
+            { info.isValidPassword ? null : 
             <Animatable.View animation="fadeInLeft" duration={500}>
             <Text style={styles.errorMsg}>Password must be 8 characters long.</Text>
             </Animatable.View>
             }
-            
+            {/* 이 글자가 사라져야하는데 사라지지 않음 */}
 
             <TouchableOpacity>
                 <Text style={{color: '#c6d685', marginTop:15}}>Forgot password?</Text>
@@ -213,7 +234,7 @@ const SignInScreen = ({navigation}) => {
             <View style={styles.button}>
                 <TouchableOpacity
                     style={styles.signIn}
-                    onPress={() => {loginHandle( data.username, data.password )}}
+                    onPress={tryLogin}
                 >
                 <LinearGradient
                     colors={['#a9d1d9', '#a9d1d9']}

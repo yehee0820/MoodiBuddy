@@ -20,9 +20,10 @@ import axios from 'axios';
 import { useLinkProps } from '@react-navigation/native';
 import { NavigationEvents } from 'react-navigation';
 
+
 const SignUpScreen = ({navigation}) => {
 
-    const [data, setData] = useState({
+    const [info, setInfo] = useState({
         email: '',
         username: '',
         password: '',
@@ -34,28 +35,30 @@ const SignUpScreen = ({navigation}) => {
         // confirm_secureTextEntry: true,
     });
 
+
     const handleSubmit = () => {
-        axios.post('http://ec2-54-180-93-247.ap-northeast-2.compute.amazonaws.com/api/v1/user/', data, {
+        axios.post('http://ec2-54-180-93-247.ap-northeast-2.compute.amazonaws.com/api/v1/user/', info, {
             headers: {'Accept' : 'application/json',
             'Content-type' : 'application/json'}
         }).then((res) => {
-            console.log(res);
-          })
-        //   .then(navigation.navigate('Home'))
-          .catch((err) => {
+            console.log(res.data);
+          }).then(()=>{
+              navigation.goBack()
+            }).catch((err) => {
             console.log("ERROR", err.res);
           })
     }
 
+
     const emailInputChange = e => {
-        setData({
-            ...data,
+        setInfo({
+            ...info,
             email: e.nativeEvent.text,
             check_emailInputChange: true
         });
         // if( e.length !== 0 ) {
-        //     setData({
-        //         ...data,
+        //     setInfo({
+        //         ...info,
         //         email: e.target.value,
         //         check_emailInputChange: true
         //     });
@@ -64,20 +67,20 @@ const SignUpScreen = ({navigation}) => {
     }
 
     const textInputChange = e => {
-        setData({
-            ...data,
+        setInfo({
+            ...info,
             username: e.nativeEvent.text,
             check_textInputChange: true
         });
         // if( e.length !== 0 ) {
-        //     setData({
-        //         ...data,
+        //     setInfo({
+        //         ...info,
         //         username: e.target.value,
         //         check_textInputChange: true
         //     });
         // } else {
-        //     setData({
-        //         ...data,
+        //     setInfo({
+        //         ...info,
         //         username: e.target.value,
         //         check_textInputChange: false
         //     });
@@ -85,29 +88,29 @@ const SignUpScreen = ({navigation}) => {
     }
 
     const handlePasswordChange = e => {
-        setData({
-            ...data,
+        setInfo({
+            ...info,
             password: e.nativeEvent.text
         });
     }
 
     // const handleConfirmPasswordChange = (e) => {
-    //     setData({
-    //         ...data,
+    //     setInfo({
+    //         ...info,
     //         confirm_password: e.target.data
     //     });
     // }
 
     const updateSecureTextEntry = () => {
-        setData({
-            ...data,
-            secureTextEntry: !data.secureTextEntry
+        setInfo({
+            ...info,
+            secureTextEntry: !info.secureTextEntry
         });
     }
 
     // const updateConfirmSecureTextEntry = () => {
-    //     setData({
-    //         ...data,
+    //     setInfo({
+    //         ...info,
     //         confirm_secureTextEntry: !data.confirm_secureTextEntry
     //     });
     // }
@@ -138,10 +141,10 @@ const SignUpScreen = ({navigation}) => {
                     placeholder="Your Email"
                     style={styles.textInput}
                     autoCapitalize="none"
-                    value={data.email}
+                    value={info.email}
                     onChange={emailInputChange} required
                 />
-                {data.check_emailInputChange ? 
+                {info.check_emailInputChange ? 
                 <Animatable.View
                     animation="bounceIn"
                 >
@@ -167,10 +170,10 @@ const SignUpScreen = ({navigation}) => {
                     placeholder="Your Username"
                     style={styles.textInput}
                     autoCapitalize="none"
-                    value={data.username}
+                    value={info.username}
                     onChange={textInputChange} required
                 />
-                {data.check_textInputChange ? 
+                {info.check_textInputChange ? 
                 <Animatable.View
                     animation="bounceIn"
                 >
@@ -194,16 +197,16 @@ const SignUpScreen = ({navigation}) => {
                 />
                 <TextInput 
                     placeholder="Your Password"
-                    secureTextEntry={data.secureTextEntry ? true : false}
+                    secureTextEntry={info.secureTextEntry ? true : false}
                     style={styles.textInput}
                     autoCapitalize="none"
-                    value={data.password}
+                    value={info.password}
                     onChange={handlePasswordChange} required
                 />
                 <TouchableOpacity
                     onPress={updateSecureTextEntry}
                 >
-                    {data.secureTextEntry ? 
+                    {info.secureTextEntry ? 
                     <Feather 
                         name="eye-off"
                         color="grey"
@@ -265,7 +268,7 @@ const SignUpScreen = ({navigation}) => {
                 <TouchableOpacity
                     style={styles.signIn}
                     onPress={handleSubmit}
-                    onPress={() => navigation.goBack()}
+                    
                     //여기 누르면 axios 또는 fetch로 서버와 연결되도록!
                 >
                 <LinearGradient
