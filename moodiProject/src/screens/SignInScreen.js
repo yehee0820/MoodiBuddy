@@ -22,7 +22,7 @@ import { Users } from './SignUpScreen'
 import axios from 'axios';
 let userToken = '';
 const SignInScreen = ({navigation}) => {
-
+    
     const [info, setInfo] = useState({
         username: '',
         password: '',
@@ -93,7 +93,10 @@ const SignInScreen = ({navigation}) => {
             });
         }
     }
-
+    //메인페이지 이동
+    const userMainpage = (token) => {
+        axios.get('http://ec2-54-180-93-247.ap-northeast-2.compute.amazonaws.com/api/v1/user/')
+    }
     const tryLogin = () => {
         axios.put('http://ec2-54-180-93-247.ap-northeast-2.compute.amazonaws.com/api/v1/user/login/', info, {
             headers: {'Accept' : 'application/json',
@@ -102,6 +105,8 @@ const SignInScreen = ({navigation}) => {
             console.log(res.data);
             userToken = res.data.token;
             console.log(userToken);
+          }).then((res) => {
+            userMainpage(res.data.token)
           })
           //.then -> mainpage 받아오는 함수 실현
         //   .then(()=>{
@@ -110,6 +115,8 @@ const SignInScreen = ({navigation}) => {
             console.log("ERROR", err.res);
           })
     }
+
+    
     
     // const loginHandle = (userName, password) => {
         
