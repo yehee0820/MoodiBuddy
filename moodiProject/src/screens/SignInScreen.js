@@ -17,7 +17,6 @@ import Feather from 'react-native-vector-icons/Feather';
 import { useTheme } from 'react-native-paper';
 
 import { AuthContext } from '../components/context';
-import { Users } from './SignUpScreen'
 
 import axios from 'axios';
 let userToken = '';
@@ -94,8 +93,8 @@ const SignInScreen = ({navigation}) => {
         }
     }
     //메인페이지 이동
-    const userMainpage = (token) => {
-        axios.get('http://ec2-54-180-93-247.ap-northeast-2.compute.amazonaws.com/api/v1/user/')
+    const userMainpage = ({navigation}) => {
+        navigation.navigate('Home')
     }
     const tryLogin = () => {
         axios.put('http://ec2-54-180-93-247.ap-northeast-2.compute.amazonaws.com/api/v1/user/login/', info, {
@@ -104,15 +103,19 @@ const SignInScreen = ({navigation}) => {
         }).then((res) => {
             console.log(res.data);
             userToken = res.data.token;
-            console.log(userToken);
-          }).then((res) => {
-            userMainpage(res.data.token)
-          })
+            console.log(userToken);})
+        //   }).then((res) => {
+        //     if (res.data.nickname == null) {
+        //         Alert.alert('닉네임을 입력하세요')
+        //     } else if (res.data.nickname != null ) {
+        //         userMainpage
+        //     }
+        //   })
           //.then -> mainpage 받아오는 함수 실현
         //   .then(()=>{
         //       navigation.goBack()})
               .catch((err) => {
-            console.log("ERROR", err.res);
+            console.log("ERROR", err.response.data);
           })
     }
 
