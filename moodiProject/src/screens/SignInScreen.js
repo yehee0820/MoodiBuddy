@@ -1,14 +1,6 @@
 import React, {useState, useContext} from 'react';
-import { 
-    View, 
-    Text, 
-    TouchableOpacity, 
-    TextInput,
-    Platform,
-    StyleSheet ,
-    StatusBar,
-    Alert
-} from 'react-native';
+import { View, Text, TouchableOpacity, TextInput, Platform, 
+        StyleSheet, StatusBar, Alert, Modal } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import LinearGradient from 'react-native-linear-gradient';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -19,7 +11,9 @@ import { useTheme } from 'react-native-paper';
 import { AuthContext } from '../components/context';
 
 import axios from 'axios';
-let userToken = '';
+
+
+// let userToken = '';
 const SignInScreen = ({navigation}) => {
     
     const [info, setInfo] = useState({
@@ -29,10 +23,16 @@ const SignInScreen = ({navigation}) => {
         secureTextEntry: true,
         isValidUser: true,
         isValidPassword: true,
+        
     });
 
-    const { colors } = useTheme();
+    const [nick, setNick] = useState({
+        nickname: '',
+        isVaildNickname: true
+    })
 
+    const { colors } = useTheme();
+    const [modalVisible, setModalVisible] = useState(false);
     const { signIn } = useContext(AuthContext);
 
     
@@ -71,6 +71,13 @@ const SignInScreen = ({navigation}) => {
             });
         }
     }
+    const nicknameInput = e => {
+        setNick({
+            ...nick,
+            nickname: e.nativeEvent.text,
+            isVaildNickname: true
+        });
+    }
 
     const updateSecureTextEntry = () => {
         setInfo({
@@ -96,31 +103,41 @@ const SignInScreen = ({navigation}) => {
     const userMainpage = ({navigation}) => {
         navigation.navigate('Home')
     }
+
     const tryLogin = () => {
         axios.put('http://ec2-54-180-93-247.ap-northeast-2.compute.amazonaws.com/api/v1/user/login/', info, {
             headers: {'Accept' : 'application/json',
             'Content-type' : 'application/json'}
         }).then((res) => {
             console.log(res.data);
-            userToken = res.data.token;
-            console.log(userToken);})
-        //   }).then((res) => {
-        //     if (res.data.nickname == null) {
-        //         Alert.alert('닉네임을 입력하세요')
-        //     } else if (res.data.nickname != null ) {
-        //         userMainpage
-        //     }
-        //   })
+            // userToken = res.data.token;
+            // console.log(userToken);
+            if (res.data.nickname == null) {
+                setModalVisible(true)
+            } else if (res.data.nickname != null ) {
+                userMainpage
+            }
+          }).catch((err) => {
+            console.log("ERROR", err.response.data);
           //.then -> mainpage 받아오는 함수 실현
         //   .then(()=>{
         //       navigation.goBack()})
-              .catch((err) => {
-            console.log("ERROR", err.response.data);
+              
           })
     }
 
-    
-    
+    const NickConfirmed = () => {
+        axios.post('http://ec2-54-180-93-247.ap-northeast-2.compute.amazonaws.com/api/v1/userprofile/', nick, {
+            headers: {'Accept' : 'application/json',
+            'Content-type' : 'application/json'}
+        }).then((res)=>{
+            console.log(res.data);
+        }).then(userMainpage)
+        .catch((err) => {
+            console.log("ERROR", err.response.data);
+    })
+}
+
     // const loginHandle = (userName, password) => {
         
     //     const foundUser = Users.filter( item => {
@@ -149,10 +166,12 @@ const SignInScreen = ({navigation}) => {
         <View style={styles.header}>
             <Text style={styles.text_header}>Welcome!</Text>
         </View>
+        
         <Animatable.View 
             animation="fadeInUpBig"
             style={styles.footer}
         >
+        
             <Text style={[styles.text_footer, {
                 color: "#4a453f"
             }]}>Username</Text>
@@ -241,6 +260,48 @@ const SignInScreen = ({navigation}) => {
             <TouchableOpacity>
                 <Text style={{color: '#c6d685', marginTop:15}}>Forgot password?</Text>
             </TouchableOpacity>
+            <View style={styles.popupBox}>
+                <Modal
+                    animationType="slide"
+                    transparent={true}
+                    visible={modalVisible}
+                    onRequestClose={() => {
+                    Alert.alert("취소되었습니다.");
+                    setModalVisible(!modalVisible);
+                    }}
+                >
+                
+                <View style={styles.modalView}>
+                    <Text style={[styles.modalText, {fontSize: 22, fontWeight: '700', marginBottom: 8}]}>닉네임을 입력하세요</Text>
+                    <Text style={[styles.modalText, {fontSize: 14, marginBottom: 20,}]}>(특수문자 사용 불가능)</Text>
+                    <View style={styles.actionPop}>
+                    <TextInput 
+                            placeholder="Your nickname"
+                            placeholderTextColor="#666666"
+                            style={[styles.textInputPop, {
+                                color: "#4a453f"
+                            }]}
+                            autoCapitalize="none"
+                            value={nick.nickname}
+                            onChange={nicknameInput} required
+                        />
+                        
+                        </View>
+                        
+                        <Text style={[styles.errorMsg, {alignItems: 'flex-end', marginTop: 4, marginLeft: 5,}]}>사용 가능한 닉네임입니다</Text>
+        
+                    <View style={{alignItems: 'center'}}>
+                    <TouchableOpacity
+                    style={styles.buttonPop}
+                    onPress={NickConfirmed}
+                    >
+                    <Text style={[styles.textSign, {
+                        color: '#fff'
+                    }]}>사용하기</Text>
+                    </TouchableOpacity></View>
+                </View>
+                </Modal>
+        </View>
             <View style={styles.button}>
                 <TouchableOpacity
                     style={styles.signIn}
@@ -342,5 +403,60 @@ const styles = StyleSheet.create({
     textSign: {
         fontSize: 18,
         fontWeight: 'bold'
-    }
+    },
+    popupBox: {
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    actionPop: {
+        flexDirection: 'row',
+        height: 35,
+        marginTop: 10,
+        borderWidth: 1.3,
+        borderColor: '#d4e0a2',
+        borderRadius: 13,
+        padding: 5,
+    },
+    modalView: {
+        margin: 20,
+        marginTop: 330,
+        backgroundColor: "#fffbf2",
+        borderRadius: 20,
+        padding: 35,
+        
+        shadowColor: "#000",
+        shadowOffset: {
+          width: 2,
+          height: 2
+        },
+        shadowOpacity: 0.4,
+        shadowRadius: 15,
+        elevation: 5
+      },
+    textInputPop: {
+        paddingLeft: 7,
+        flex: 0.75,
+        marginTop: Platform.OS === 'ios' ? 0 : -12,
+        marginBottom: Platform.OS === 'ios' ? 0 : -12,
+        color: '#4a453f',
+    },
+      buttonPop: {
+        backgroundColor: "#d4e0a2",
+        marginTop: 35,
+        alignItems: 'center',
+        width: '67%',
+        height: 40,
+        borderRadius: 20,
+        padding: 10,
+        elevation: 2
+      },
+      textStyle: {
+        color: "white",
+        fontWeight: "bold",
+        textAlign: "center"
+      },
+      modalText: {
+        textAlign: "center",
+        color: '#4a453f',
+      }
   });
