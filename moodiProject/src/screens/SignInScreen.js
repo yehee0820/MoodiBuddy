@@ -13,7 +13,7 @@ import { AuthContext } from '../components/context';
 import axios from 'axios';
 
 
-// let userToken = '';
+let userToken = '';
 const SignInScreen = ({navigation}) => {
     
     const [info, setInfo] = useState({
@@ -110,8 +110,8 @@ const SignInScreen = ({navigation}) => {
             'Content-type' : 'application/json'}
         }).then((res) => {
             console.log(res.data);
-            // userToken = res.data.token;
-            // console.log(userToken);
+            userToken = res.data.token;
+            console.log(userToken);
             if (res.data.nickname == null) {
                 setModalVisible(true)
             } else if (res.data.nickname != null ) {
@@ -129,7 +129,8 @@ const SignInScreen = ({navigation}) => {
     const NickConfirmed = () => {
         axios.post('http://ec2-54-180-93-247.ap-northeast-2.compute.amazonaws.com/api/v1/userprofile/', nick, {
             headers: {'Accept' : 'application/json',
-            'Content-type' : 'application/json'}
+            'Content-type' : 'application/json',
+            'Authorization' : `token ${userToken}` }
         }).then((res)=>{
             console.log(res.data);
         }).then(userMainpage)
@@ -288,7 +289,7 @@ const SignInScreen = ({navigation}) => {
                         
                         </View>
                         
-                        <Text style={[styles.errorMsg, {alignItems: 'flex-end', marginTop: 4, marginLeft: 5,}]}>사용 가능한 닉네임입니다</Text>
+                        <Text style={[styles.errorMsg, {alignItems: 'flex-end', marginTop: 4, marginLeft: 5,}]}>이미 사용중인 닉네임입니다</Text>
         
                     <View style={{alignItems: 'center'}}>
                     <TouchableOpacity
