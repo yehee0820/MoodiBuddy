@@ -11,9 +11,10 @@ import { useTheme } from 'react-native-paper';
 import { AuthContext } from '../components/context';
 
 import axios from 'axios';
+import AsyncStorage from '@react-native-community/async-storage';
 
 
-let userToken = '';
+
 const SignInScreen = ({navigation}) => {
     
     const [info, setInfo] = useState({
@@ -100,7 +101,7 @@ const SignInScreen = ({navigation}) => {
         }
     }
     //메인페이지 이동
-    const userMainpage = ({navigation}) => {
+    const userMainpage = () => {
         navigation.navigate('Home')
     }
 
@@ -110,33 +111,42 @@ const SignInScreen = ({navigation}) => {
             'Content-type' : 'application/json'}
         }).then((res) => {
             console.log(res.data);
-            userToken = res.data.token;
-            console.log(userToken);
+            const user = {
+                userToken: res.data.token,
+                nickname: res.data.nickname,
+                username: info.username
+            }
+            AsyncStorage.setItem('user', JSON.stringify(user));
             if (res.data.nickname == "not_specified*") {
                 setModalVisible(true)
             } else if (res.data.nickname != "not_specified*" ) {
-                Alert.alert('로그인 성공')
+                navigation.navigate('Home')
             }
           }).catch((err) => {
             console.log("ERROR", err.response.data);
-          //.then -> mainpage 받아오는 함수 실현
-        //   .then(()=>{
-        //       navigation.goBack()})
+
               
           })
     }
 
     const NickConfirmed = () => {
-        axios.put('http://ec2-54-180-93-247.ap-northeast-2.compute.amazonaws.com/api/v1/userprofile/nickname/', nick, {
-            headers: {'Accept' : 'application/json',
-            'Content-type' : 'application/json',
-            'Authorization' : `token ${userToken}` }
-        }).then((res)=>{
-            console.log(res.data);
-            setModalVisible(false)
-            Alert.alert('닉네임이 생성되었습니다!')
-        }).catch((err) => {
-            console.log("ERROR", err.response.data);
+        AsyncStorage.getItem('user').then(userString => {
+            const user = JSON.parse(userString)
+            console.log(user);
+            axios.put('http://ec2-54-180-93-247.ap-northeast-2.compute.amazonaws.com/api/v1/userprofile/nickname/', nick, {
+                headers: {'Accept' : 'application/json',
+                'Content-type' : 'application/json',
+                'Authorization' : `token ${user.userToken}` }
+            }).then((res)=>{
+                console.log(res.data);
+                user.nickname = res.data.nickname //update
+                AsyncStorage.setItem('user', JSON.stringify(user));
+
+                setModalVisible(false)
+                navigation.navigate('Home')
+            }).catch((err) => {
+                console.log("ERROR", err.response.data);
+        });
     })
 }
 

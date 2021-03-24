@@ -2,6 +2,7 @@ import React from 'react';
 
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
+import { DrawerActions } from '@react-navigation/native';
 
 import Icon from 'react-native-vector-icons/Ionicons';
 
@@ -9,7 +10,7 @@ import HomeScreen from './HomeScreen';
 import DetailsScreen from './DetailsScreen';
 import ExploreScreen from './ExploreScreen';
 import ProfileScreen from './ProfileScreen';
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, useNavigation } from '@react-navigation/native';
 
 const HomeStack = createStackNavigator();
 const DetailsStack = createStackNavigator();
@@ -71,7 +72,7 @@ const MainTabScreen = () => (
 export default MainTabScreen;
 
 const HomeStackScreen = ({navigation}) => (
-  <NavigationContainer>
+
 <HomeStack.Navigator screenOptions={{
         headerStyle: {
         backgroundColor: '#009387',
@@ -84,14 +85,14 @@ const HomeStackScreen = ({navigation}) => (
         <HomeStack.Screen name="Home" component={HomeScreen} options={{
         title:'Overview',
         headerLeft: () => (
-            <Icon.Button name="ios-menu" size={25} backgroundColor="#009387" onPress={() => navigation.openDrawer()}></Icon.Button>
+            <Icon.Button name="ios-menu" size={25} backgroundColor="#009387" onPress={() => DrawerActions.openDrawer()}></Icon.Button>
         )
         }} />
-</HomeStack.Navigator></NavigationContainer>
+</HomeStack.Navigator>
 );
 
 const DetailsStackScreen = ({navigation}) => (
-  <NavigationContainer>
+  
 <DetailsStack.Navigator screenOptions={{
         headerStyle: {
         backgroundColor: '#1f65ff',
@@ -103,8 +104,10 @@ const DetailsStackScreen = ({navigation}) => (
     }}>
         <DetailsStack.Screen name="Details" component={DetailsScreen} options={{
         headerLeft: () => (
-            <Icon.Button name="ios-menu" size={25} backgroundColor="#1f65ff" onPress={() => navigation.openDrawer()}></Icon.Button>
+            <Icon.Button name="ios-menu" size={25} backgroundColor="#1f65ff" onPress={() => DrawerActions.openDrawer()}></Icon.Button>
         )
         }} />
-</DetailsStack.Navigator></NavigationContainer>
+</DetailsStack.Navigator>
 );
+
+//profile, setting 도 stack으로 만들기
