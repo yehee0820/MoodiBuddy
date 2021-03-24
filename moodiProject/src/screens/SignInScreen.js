@@ -112,10 +112,10 @@ const SignInScreen = ({navigation}) => {
             console.log(res.data);
             userToken = res.data.token;
             console.log(userToken);
-            if (res.data.nickname == null) {
+            if (res.data.nickname == "not_specified*") {
                 setModalVisible(true)
-            } else if (res.data.nickname != null ) {
-                userMainpage
+            } else if (res.data.nickname != "not_specified*" ) {
+                Alert.alert('로그인 성공')
             }
           }).catch((err) => {
             console.log("ERROR", err.response.data);
@@ -127,14 +127,15 @@ const SignInScreen = ({navigation}) => {
     }
 
     const NickConfirmed = () => {
-        axios.post('http://ec2-54-180-93-247.ap-northeast-2.compute.amazonaws.com/api/v1/userprofile/', nick, {
+        axios.put('http://ec2-54-180-93-247.ap-northeast-2.compute.amazonaws.com/api/v1/userprofile/nickname/', nick, {
             headers: {'Accept' : 'application/json',
             'Content-type' : 'application/json',
             'Authorization' : `token ${userToken}` }
         }).then((res)=>{
             console.log(res.data);
-        }).then(userMainpage)
-        .catch((err) => {
+            setModalVisible(false)
+            Alert.alert('닉네임이 생성되었습니다!')
+        }).catch((err) => {
             console.log("ERROR", err.response.data);
     })
 }
