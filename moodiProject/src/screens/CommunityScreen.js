@@ -1,10 +1,10 @@
 import React from 'react';
 import { View, Text, Button, StyleSheet } from 'react-native';
 
-const ProfileScreen = () => {
+const CommunityScreen = () => {
     return (
       <View style={styles.container}>
-        <Text>Profile Screen</Text>
+        <Text>CommunityScreen</Text>
         <Button
           title="Click Here"
           onPress={() => alert('Button Clicked!')}
@@ -13,7 +13,7 @@ const ProfileScreen = () => {
     );
 };
 
-export default ProfileScreen;
+export default CommunityScreen;
 
 const styles = StyleSheet.create({
   container: {

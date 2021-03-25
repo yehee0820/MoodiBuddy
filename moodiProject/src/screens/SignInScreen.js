@@ -100,10 +100,6 @@ const SignInScreen = ({navigation}) => {
             });
         }
     }
-    //메인페이지 이동
-    const userMainpage = () => {
-        navigation.navigate('Home')
-    }
 
     const tryLogin = () => {
         axios.put('http://ec2-54-180-93-247.ap-northeast-2.compute.amazonaws.com/api/v1/user/login/', info, {

@@ -7,13 +7,17 @@ import { DrawerActions } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 import HomeScreen from './HomeScreen';
-import DetailsScreen from './DetailsScreen';
-import ExploreScreen from './ExploreScreen';
-import ProfileScreen from './ProfileScreen';
-import { NavigationContainer, useNavigation } from '@react-navigation/native';
+import StatScreen from './StatScreen';
+import CommunityScreen from './CommunityScreen';
+import DiaryScreen from './DiaryScreen';
+import StoreScreen from './StoreScreen';
+
 
 const HomeStack = createStackNavigator();
-const DetailsStack = createStackNavigator();
+const StatStack = createStackNavigator();
+const CommunityStack = createStackNavigator();
+const DiaryStack = createStackNavigator();
+const StoreStack = createStackNavigator();
 
 const Tab = createMaterialBottomTabNavigator();
 
@@ -22,6 +26,31 @@ const MainTabScreen = () => (
       initialRouteName="Home"
       activeColor="#fff"
     >
+      
+     
+      <Tab.Screen
+        name="Diary"
+        component={DiaryStackScreen}
+        options={{
+          tabBarLabel: 'Diary',
+          tabBarColor: '#694fad',
+          tabBarIcon: ({ color }) => (
+            <Icon name="ios-book" color={color} size={26} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Stat"
+        component={StatStackScreen}
+        options={{
+          tabBarLabel: 'Statistics',
+          tabBarColor: '#1f65ff',
+          tabBarIcon: ({ color }) => (
+            <Icon name="ios-stats-chart" color={color} size={26} />
+          ),
+        }}
+      />
+      
       <Tab.Screen
         name="Home"
         component={HomeStackScreen}
@@ -34,38 +63,28 @@ const MainTabScreen = () => (
         }}
       />
       <Tab.Screen
-        name="Notifications"
-        component={DetailsStackScreen}
+        name="Community"
+        component={CommunityStackScreen}
         options={{
-          tabBarLabel: 'Updates',
-          tabBarColor: '#1f65ff',
-          tabBarIcon: ({ color }) => (
-            <Icon name="ios-notifications" color={color} size={26} />
-          ),
-        }}
-      />
-      <Tab.Screen
-        name="Profile"
-        component={ProfileScreen}
-        options={{
-          tabBarLabel: 'Profile',
-          tabBarColor: '#694fad',
-          tabBarIcon: ({ color }) => (
-            <Icon name="ios-person" color={color} size={26} />
-          ),
-        }}
-      />
-      <Tab.Screen
-        name="Explore"
-        component={ExploreScreen}
-        options={{
-          tabBarLabel: 'Explore',
+          tabBarLabel: 'Community',
           tabBarColor: '#d02860',
           tabBarIcon: ({ color }) => (
-            <Icon name="ios-aperture" color={color} size={26} />
+            <Icon name="ios-globe" color={color} size={26} />
+          ),
+        }}
+      /> 
+      <Tab.Screen
+        name="Store"
+        component={StoreStackScreen}
+        options={{
+          tabBarLabel: 'Store',
+          tabBarColor: 'green',
+          tabBarIcon: ({ color }) => (
+            <Icon name="ios-cart" color={color} size={26} />
           ),
         }}
       />
+      
     </Tab.Navigator>
 );
 
@@ -83,7 +102,7 @@ const HomeStackScreen = ({navigation}) => (
         }
     }}>
         <HomeStack.Screen name="Home" component={HomeScreen} options={{
-        title:'Overview',
+        title:'무디버디',
         headerLeft: () => (
             <Icon.Button name="ios-menu" size={25} backgroundColor="#009387" onPress={() => DrawerActions.openDrawer()}></Icon.Button>
         )
@@ -91,9 +110,9 @@ const HomeStackScreen = ({navigation}) => (
 </HomeStack.Navigator>
 );
 
-const DetailsStackScreen = ({navigation}) => (
+const StatStackScreen = ({navigation}) => (
   
-<DetailsStack.Navigator screenOptions={{
+<StatStack.Navigator screenOptions={{
         headerStyle: {
         backgroundColor: '#1f65ff',
         },
@@ -102,12 +121,69 @@ const DetailsStackScreen = ({navigation}) => (
         fontWeight: 'bold'
         }
     }}>
-        <DetailsStack.Screen name="Details" component={DetailsScreen} options={{
+        <StatStack.Screen name="Stat" component={StatScreen} options={{
+          title: 'Statistics',
         headerLeft: () => (
             <Icon.Button name="ios-menu" size={25} backgroundColor="#1f65ff" onPress={() => DrawerActions.openDrawer()}></Icon.Button>
         )
         }} />
-</DetailsStack.Navigator>
+</StatStack.Navigator>
 );
 
-//profile, setting 도 stack으로 만들기
+const DiaryStackScreen = ({navigation}) => (
+  
+  <DiaryStack.Navigator screenOptions={{
+          headerStyle: {
+          backgroundColor: '#694fad',
+          },
+          headerTintColor: '#fff',
+          headerTitleStyle: {
+          fontWeight: 'bold'
+          }
+      }}>
+          <DiaryStack.Screen name="Diary" component={DiaryScreen} options={{
+          headerLeft: () => (
+              <Icon.Button name="ios-menu" size={25} backgroundColor="#694fad" onPress={() => DrawerActions.openDrawer()}></Icon.Button>
+          )
+          }} />
+  </DiaryStack.Navigator>
+  );
+
+const CommunityStackScreen = ({navigation}) => (
+  
+  <CommunityStack.Navigator screenOptions={{
+          headerStyle: {
+          backgroundColor: '#d02860',
+          },
+          headerTintColor: '#fff',
+          headerTitleStyle: {
+          fontWeight: 'bold'
+          }
+      }}>
+          <CommunityStack.Screen name="Community" component={CommunityScreen} options={{
+          headerLeft: () => (
+              <Icon.Button name="ios-menu" size={25} backgroundColor="#d02860" onPress={() => DrawerActions.openDrawer()}></Icon.Button>
+          )
+          }} />
+  </CommunityStack.Navigator>
+  );
+
+
+const StoreStackScreen = ({navigation}) => (
+  
+  <StoreStack.Navigator screenOptions={{
+          headerStyle: {
+          backgroundColor: 'green',
+          },
+          headerTintColor: '#fff',
+          headerTitleStyle: {
+          fontWeight: 'bold'
+          }
+      }}>
+          <StoreStack.Screen name="Store" component={StoreScreen} options={{
+          headerLeft: () => (
+              <Icon.Button name="ios-menu" size={25} backgroundColor="green" onPress={() => DrawerActions.openDrawer()}></Icon.Button>
+          )
+          }} />
+  </StoreStack.Navigator>
+  );
