@@ -1,0 +1,6 @@
+module Pods_moodiProject_moodiProjectTests {
+  umbrella header "Pods-moodiProject-moodiProjectTests-umbrella.h"
+
+  export *
+  module * { export * }
+}
